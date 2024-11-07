@@ -66,6 +66,7 @@ case "$1" in
     "--theme-default") fancygit_theme_set "default" "true";;
     "--theme-human") fancygit_theme_set "human" "false";;
     "--theme-simple") fancygit_theme_set "simple" "false";;
+    "--theme-roland") fancygit_theme_set "roland" "false";;
 
     # Color schemes.
     "--color-scheme-simple") fancygit_theme_color_scheme_set "simple_simple";;
