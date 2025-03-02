@@ -82,7 +82,8 @@ fancygit_theme_builder() {
     local prompt_user
     local prompt_env
     local prompt_path
-    local prompt_branch
+    local prompt_git_branch
+    local prompt_git_user
     local prompt_aws
     local prompt_double_line
     local notification_area
@@ -104,7 +105,7 @@ fancygit_theme_builder() {
 
     host_name=$(fancygit_config_get "host_name" "\\h")
 
-    prompt_aws="($(aws_profile)) "
+    prompt_identities="${time}($(aws_profile)) *$(git_user)* ${time_end}"
 
     # Get some theme config.
     prompt_time="${time}${time_raw}${time_end}"
@@ -127,7 +128,7 @@ fancygit_theme_builder() {
     then
         # No branch found, so we're not in a git repo.
         prompt_path="${path} ${prompt_path} ${path_end}${workdir_color_tag}${bg_none}${separator}${none}"
-        PS1="${clear}${bold_prompt}${prompt_aws}${prompt_path}${clear}${normal_prompt}${prompt_double_line} "
+        PS1="${clear}${bold_prompt}${prompt_identities}${prompt_path}${clear}${normal_prompt}${prompt_double_line} "
         return
     fi
 
@@ -158,8 +159,8 @@ fancygit_theme_builder() {
 
     notification_area=$(fancygit_get_notification_area "$is_rich_notification")
     prompt_path="${path_git}${notification_area}${path} ${prompt_path} ${path_end}"
-    prompt_branch="${branch} $(fancygit_git_get_branch_icon "${branch_name}") ${branch_name} ${branch_end}"
-    PS1="${clear}${bold_prompt}${prompt_aws}${prompt_path}${prompt_branch}${clear}${normal_prompt}${prompt_double_line} "
+    prompt_git_branch="${branch} $(fancygit_git_get_branch_icon "${branch_name}") ${branch_name} ${branch_end}"
+    PS1="${clear}${bold_prompt}${prompt_identities}${prompt_path}${prompt_git_branch}${clear}${normal_prompt}${prompt_double_line} "
 }
 
 # Here's where the magic happens!
@@ -168,4 +169,8 @@ PROMPT_COMMAND="fancygit_theme_builder"
 
 function aws_profile {
   echo ${AWS_PROFILE:-${AWS_DEFAULT_PROFILE}}
+}
+
+function git_user {
+  echo $(gh auth status | grep -B 1 'Active account: true' | head -1 | cut -d ' ' -f 9)
 }
