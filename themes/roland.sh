@@ -172,5 +172,5 @@ function aws_profile {
 }
 
 function git_user {
-  echo $(gh auth status | grep -B 1 'Active account: true' | head -1 | cut -d ' ' -f 9)
+  echo $(cat ~/.config/gh/hosts.yml | grep user: | cut -d: -f2 | xargs)
 }
