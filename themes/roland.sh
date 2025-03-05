@@ -160,6 +160,7 @@ fancygit_theme_builder() {
     notification_area=$(fancygit_get_notification_area "$is_rich_notification")
     prompt_path="${path_git}${notification_area}${path} ${prompt_path} ${path_end}"
     prompt_git_branch="${branch} $(fancygit_git_get_branch_icon "${branch_name}") ${branch_name} ${branch_end}"
+    [ -f ./Pulumi.yaml ] && prompt_identities="${time}($(aws_profile)) *$(git_user)* #$(pulumi_user)# ${time_end}"
     PS1="${clear}${bold_prompt}${prompt_identities}${prompt_path}${prompt_git_branch}${clear}${normal_prompt}${prompt_double_line} "
 }
 
@@ -172,5 +173,9 @@ function aws_profile {
 }
 
 function git_user {
-  echo $(cat ~/.config/gh/hosts.yml | grep user: | cut -d: -f2 | xargs)
+  echo $(cat ~/.config/gh/hosts.yml | grep user\: | cut -d\: -f2 | xargs)
+}
+
+function pulumi_user {
+  echo $(pulumi whoami)/$(pulumi stack ls | grep \* | cut -d\* -f1)
 }
