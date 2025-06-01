@@ -105,7 +105,7 @@ fancygit_theme_builder() {
 
     host_name=$(fancygit_config_get "host_name" "\\h")
 
-    prompt_identities="${time}($(aws_profile)) *$(git_user)* ${time_end}"
+    prompt_identities="${time}($(aws_profile)) *$(git_user)* -$(python_venv)- ${time_end}"
 
     # Get some theme config.
     prompt_time="${time}${time_raw}${time_end}"
@@ -160,7 +160,7 @@ fancygit_theme_builder() {
     notification_area=$(fancygit_get_notification_area "$is_rich_notification")
     prompt_path="${path_git}${notification_area}${path} ${prompt_path} ${path_end}"
     prompt_git_branch="${branch} $(fancygit_git_get_branch_icon "${branch_name}") ${branch_name} ${branch_end}"
-    [ -f ./Pulumi.yaml ] && prompt_identities="${time}($(aws_profile)) *$(git_user)* #$(pulumi_user)# ${time_end}"
+    [ -f ./Pulumi.yaml ] && prompt_identities="${time}($(aws_profile)) *$(git_user)* -$(python_venv)- #$(pulumi_user)# ${time_end}"
     PS1="${clear}${bold_prompt}${prompt_identities}${prompt_path}${prompt_git_branch}${clear}${normal_prompt}${prompt_double_line} "
 }
 
@@ -178,4 +178,8 @@ function git_user {
 
 function pulumi_user {
   echo $(pulumi whoami)/$(pulumi stack ls | grep \* | cut -d\* -f1)
+}
+
+function python_venv {
+  echo $(basename ${VIRTUAL_ENV:-none})
 }
